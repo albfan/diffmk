@@ -1,0 +1,173 @@
+<?xml version='1.0'?>
+<diffmk xmlns='http://www.sun.com/xml/diffmk'
+        xmlns:xsi='http://www.w3.org/2000/10/XMLSchema-instance'
+        xsi:schemaLocation='http://www.sun.com/xml/diffmk
+                            diffmk.xsd'>
+
+<doctype name="docbook"
+         attribute="revisionflag"
+         changed="changed"
+         added="added"
+         deleted="deleted">
+  <root name="book"/>
+  <root name="article"/>
+  <root name="chapter"/>
+  <root name="appendix"/>
+  <root name="para"/>
+  <wrapper element="phrase"/>
+  <wrapper parent="article" element="para"/>
+  <wrapper parent="section" element="para"/>
+  <wrapper parent="sect1" element="para"/>
+  <wrapper parent="sect2" element="para"/>
+  <wrapper parent="sect3" element="para"/>
+  <wrapper parent="sect4" element="para"/>
+  <wrapper parent="sect5" element="para"/>
+  <wrapper parent="refsect1" element="para"/>
+  <wrapper parent="refsect2" element="para"/>
+  <wrapper parent="refsect3" element="para"/>
+  <wrapper parent="pubdate"/>
+  <wrapper parent="releaseinfo"/>
+  <wrapper parent="sgmltag"/>
+  <wrapper parent="revision"/>
+  <wrapper parent="revnumber"/>
+  <wrapper parent="date"/>
+  <wrapper parent="revremark"/>
+  <wrapper parent="authorinitials"/>
+  <wrapper parent="literal"/>
+  <wrapper parent="year"/>
+  <wrapper parent="replaceable"/>
+  <ignoreattribute element="article" name="status"/>
+</doctype>
+
+<doctype name="slides"
+         attribute="revisionflag"
+         changed="changed"
+         added="added"
+         deleted="deleted">
+  <root name="slides"/>
+  <wrapper element="phrase"/>
+  <wrapper parent="section" element="para"/>
+  <wrapper parent="pubdate"/>
+  <wrapper parent="releaseinfo"/>
+  <wrapper parent="sgmltag"/>
+  <wrapper parent="revision"/>
+  <wrapper parent="revnumber"/>
+  <wrapper parent="date"/>
+  <wrapper parent="revremark"/>
+  <wrapper parent="authorinitials"/>
+  <wrapper parent="literal"/>
+  <wrapper parent="replaceable"/>
+</doctype>
+
+<doctype name="xmlspec"
+         attribute="diff"
+         changed="chg"
+         added="add"
+         deleted="del">
+  <root name="spec"/>
+  <wrapper element="phrase"/>
+  <wrapper parent="status" element="p"/>
+  <wrapper parent="div1" element="p"/>
+  <wrapper parent="div2" element="p"/>
+  <wrapper parent="div3" element="p"/>
+  <wrapper parent="div4" element="p"/>
+  <wrapper parent="div5" element="p"/>
+  <wrapper parent="inform-div1" element="p"/>
+  <wrapper parent="back" element="p"/>
+  <wrapper parent="w3c-designation"/>
+  <wrapper parent="item" element="p"/>
+  <wrapper parent="el"/>
+  <wrapper parent="authlist"/>
+  <wrapper parent="header"/>
+  <wrapper parent="tr"/>
+  <wrapper parent="td"/>
+  <wrapper parent="tbody"/>
+  <wrapper parent="thead"/>
+  <wrapper parent="proto"/>
+  <wrapper parent="slist"/>
+  <verbatim element="eg"/>
+  <verbatim element="bnf"/>
+</doctype>
+
+<doctype name="use-cases"
+         attribute="diff"
+         changed="chg"
+         added="add"
+         deleted="del">
+  <root name="spec"/>
+  <wrapper element="phrase"/>
+  <wrapper parent="status" element="p"/>
+  <wrapper parent="div1" element="p"/>
+  <wrapper parent="div2" element="p"/>
+  <wrapper parent="div3" element="p"/>
+  <wrapper parent="div4" element="p"/>
+  <wrapper parent="div5" element="p"/>
+  <wrapper parent="inform-div1" element="p"/>
+  <wrapper parent="back" element="p"/>
+  <wrapper parent="w3c-designation"/>
+  <wrapper parent="item" element="p"/>
+  <wrapper parent="el"/>
+  <wrapper parent="authlist"/>
+  <wrapper parent="header"/>
+  <wrapper parent="tr"/>
+  <wrapper parent="td"/>
+  <wrapper parent="tbody"/>
+  <wrapper parent="thead"/>
+  <wrapper parent="proto"/>
+  <wrapper parent="slist"/>
+  <verbatim element="bnf"/>
+</doctype>
+
+<doctype name="xpath-grammar"
+         attribute="diff"
+         changed="chg"
+         added="add"
+         deleted="del">
+  <root name="spec"/>
+  <wrapper element="phrase"/>
+  <wrapper parent="status" element="p"/>
+  <wrapper parent="div1" element="p"/>
+  <wrapper parent="div2" element="p"/>
+  <wrapper parent="div3" element="p"/>
+  <wrapper parent="div4" element="p"/>
+  <wrapper parent="div5" element="p"/>
+  <wrapper parent="inform-div1" element="p"/>
+  <wrapper parent="back" element="p"/>
+  <wrapper parent="w3c-designation"/>
+  <wrapper parent="item" element="p"/>
+  <wrapper parent="el"/>
+  <wrapper parent="authlist"/>
+  <wrapper parent="header"/>
+  <wrapper parent="tr"/>
+  <wrapper parent="td"/>
+  <wrapper parent="tbody"/>
+  <wrapper parent="thead"/>
+  <wrapper parent="proto"/>
+  <wrapper parent="slist"/>
+  <verbatim element="eg"/>
+  <verbatim element="bnf"/>
+  <ignoreattribute name="if"/>
+</doctype>
+
+
+<doctype xmlns:x="http://www.w3.org/1999/xhtml"
+         name="xhtml"
+         attribute="class"
+         changed="chg"
+         added="add"
+         deleted="del">
+  <root name="x:html"/>
+  <wrapper element="span"/>
+  <wrapper parent="body" element="div"/>
+</doctype>
+
+<doctype name="dtd"
+         attribute="diff"
+         changed="chg"
+         added="add"
+         deleted="del">
+  <root name="dtd"/>
+  <ignoreattribute element="dtd" name="*"/>
+</doctype>
+
+</diffmk>

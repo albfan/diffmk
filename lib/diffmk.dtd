@@ -1,0 +1,41 @@
+<!ELEMENT diffmk (doctype*)>
+<!ATTLIST diffmk
+	xmlns		CDATA	#FIXED
+				"http://www.sun.com/xml/diffmk"
+	xmlns:xsi	CDATA	#FIXED
+				"http://www.w3.org/2000/10/XMLSchema-instance"
+	xsi:schemaLocation	CDATA	#IMPLIED
+>
+
+<!ELEMENT doctype ((root|wrapper|verbatim|ignoreattribute)*)>
+<!ATTLIST doctype
+	name		CDATA	#REQUIRED
+	attribute	CDATA	#IMPLIED
+	changed		CDATA	#IMPLIED
+	added		CDATA	#IMPLIED
+	deleted		CDATA	#IMPLIED
+>
+
+<!ELEMENT root EMPTY>
+<!ATTLIST root
+	name		CDATA	#REQUIRED
+	ns		CDATA	#IMPLIED
+>
+
+<!ELEMENT wrapper EMPTY>
+<!ATTLIST wrapper
+	parent		CDATA	#IMPLIED
+	element		CDATA	#IMPLIED
+>
+
+<!ELEMENT verbatim EMPTY>
+<!ATTLIST verbatim
+	element		CDATA	#IMPLIED
+>
+
+<!ELEMENT ignoreattribute EMPTY>
+<!ATTLIST ignoreattribute
+	element		CDATA	#IMPLIED
+	name		CDATA	#IMPLIED
+>
+
