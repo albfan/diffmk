@@ -6,9 +6,11 @@
 //
 package net.sf.diffmk.ui;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JTextField;
 
 // Shows how displayedMnemonic and labelFor properties work together
 public class FilenameListener implements ActionListener {
@@ -28,11 +30,12 @@ public class FilenameListener implements ActionListener {
     String[] svg = new String[] {"svg"};
     JFileChooser chooser = new JFileChooser();
     chooser.setMultiSelectionEnabled(false);
-    chooser.addChoosableFileFilter(new SimpleFileFilter(xml, "XML (*.xml)"));
     chooser.addChoosableFileFilter(new SimpleFileFilter(html, "HTML (*.x?html?)"));
     chooser.addChoosableFileFilter(new SimpleFileFilter(xsl, "XSD (*.xsd)"));
     chooser.addChoosableFileFilter(new SimpleFileFilter(xsd, "XSL (*.xsl)"));
     chooser.addChoosableFileFilter(new SimpleFileFilter(svg, "SVG (*.SVG)"));
+    chooser.addChoosableFileFilter(new SimpleFileFilter(xml, "XML (*.xml)"));
+    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     int option = chooser.showOpenDialog(frame);
     if (option == JFileChooser.APPROVE_OPTION) {
       if (chooser.getSelectedFile()!=null) 
