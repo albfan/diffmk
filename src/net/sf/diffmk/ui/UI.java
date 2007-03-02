@@ -6,9 +6,23 @@
 //
 package net.sf.diffmk.ui;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.AWTException;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import net.sf.diffmk.DiffMk;
 
 public class UI {
@@ -21,14 +35,14 @@ public class UI {
   public boolean wordOpt = false;
   public boolean ignOpt = true;
   public boolean valOpt = false;
-  public int verbosity = 0;
+  public boolean verbOpt = false;
   private DiffMk theDiffMk = null;
 
   public void show(DiffMk diffmk) {
       theDiffMk = diffmk;
 
       // The frame we'll put all this stuff in ...
-      final JFrame f = new JFrame("DiffMk Options");
+      final JFrame f = new JFrame(diffmk.version + " Options");
 
       // Create labels and text fields
       JLabel oldLabel = new JLabel("\"Old\" XML Version:", JLabel.RIGHT);
@@ -107,12 +121,14 @@ public class UI {
       final JCheckBox wordOptBox = new JCheckBox("Word-level diff", wordOpt);
       final JCheckBox ignOptBox = new JCheckBox("Ignore whitespace", ignOpt);
       final JCheckBox valOptBox = new JCheckBox("Validating", valOpt);
+      final JCheckBox verbOptBox = new JCheckBox("Verbose", verbOpt);
 
       JPanel optionPanel = new JPanel();
       optionPanel.setLayout(new GridLayout(2,2));
       optionPanel.add(wordOptBox);
       optionPanel.add(ignOptBox);
       optionPanel.add(valOptBox);
+      optionPanel.add(verbOptBox);
 
       // Ok or Cancel
       JButton ok = new JButton("OK");
@@ -135,7 +151,7 @@ public class UI {
               theDiffMk.setDiffWords(wordOptBox.isSelected());
               theDiffMk.setIgnoreWhitespace(ignOptBox.isSelected());
               theDiffMk.setValidating(valOptBox.isSelected());
-              theDiffMk.setVerbosity(verbosity);
+              theDiffMk.setVerbosity(verbOptBox.isSelected() ? 1 : 0);
 
 	  f.dispose();
 	}
