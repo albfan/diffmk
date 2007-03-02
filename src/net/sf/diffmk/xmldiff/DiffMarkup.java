@@ -25,61 +25,90 @@ import java.util.Enumeration;
 import org.w3c.dom.*;
 
 public class DiffMarkup {
-  protected String attrName = null;
-  protected String changed = "";
-  protected String added = "";
-  protected String deleted = "";
   protected Hashtable elemContext = new Hashtable();
   protected Hashtable rootElements = new Hashtable();
   protected Hashtable ignoreAttributes = new Hashtable();
   protected Hashtable verbatimElements = new Hashtable();
 
-  public DiffMarkup (String attribute, String chg, String add, String del) {
-    attrName = attribute;
-    changed = chg;
-    added = add;
-    deleted = del;
+  public DiffMarkup () {
   }
 
   public void setChanged(Element node) {
-    node.setAttribute(attrName, changed);
+      //node.setAttribute(attrName, changed);
+      node.setAttributeNS("http://diffmk.sf.net/ns/diff","diffmk:change","changed");
   }
 
   public void setAdded(Element node) {
-    node.setAttribute(attrName, added);
+      //node.setAttribute(attrName, added);
+      node.setAttributeNS("http://diffmk.sf.net/ns/diff","diffmk:change","added");
   }
 
   public void setDeleted(Element node) {
-    node.setAttribute(attrName, deleted);
-    if (node.hasAttribute("id")) {
-      String value = node.getAttribute("id");
-      node.setAttribute("id", "DEL." + value);
-    }
+      //node.setAttribute(attrName, deleted);
+      node.setAttributeNS("http://diffmk.sf.net/ns/diff","diffmk:change","deleted");
+      // FIXME: add a switch for id attribute name
+      if (node.hasAttribute("id")) {
+          node.setAttribute("id", "DEL." + node.getAttribute("id"));
+      }
+      if (node.hasAttribute("xml:id")) {
+          node.setAttribute("xml:id", "DEL." + node.getAttribute("xml:id"));
+      }
   }
 
+  private String getChangedAttribute(Node node) {
+      if (node == null || node.getNodeType() != Node.ELEMENT_NODE) {
+          return null;
+      }
+      
+      Element elem = (Element) node;
+      
+      if (elem.hasAttributeNS("http://diffmk.sf.net/ns/diff", "diffmk:changed")) {
+          return elem.getAttributeNS("http://diffmk.sf.net/ns/diff", "diffmk:changed");
+      } else {
+          return null;
+      }
+  }
+  
   public boolean isChanged(Node node) {
-    return (node.getNodeType() == Node.ELEMENT_NODE
-	    && ((Element) node).getAttribute(attrName) != null
-	    && ((Element) node).getAttribute(attrName).equals(changed));
+      return "changed".equals(getChangedAttribute(node));
   }
 
   public boolean isAdded(Node node) {
-    return (node.getNodeType() == Node.ELEMENT_NODE
-	    && ((Element) node).getAttribute(attrName) != null
-	    && ((Element) node).getAttribute(attrName).equals(added));
+      return "added".equals(getChangedAttribute(node));
   }
 
   public boolean isDeleted(Node node) {
-    return (node.getNodeType() == Node.ELEMENT_NODE
-	    && ((Element) node).getAttribute(attrName) != null
-	    && ((Element) node).getAttribute(attrName).equals(deleted));
+      return "deleted".equals(getChangedAttribute(node));
   }
 
   public void clear(Element node) {
-    node.removeAttribute(attrName);
+    node.removeAttributeNS("http://diffmk.sf.net/ns/diff", "diffmk:changed");
   }
 
   public Element getWrapper(Element context) {
+    Document doc = context.getOwnerDocument();
+    return doc.createElementNS("http://diffmk.sf.net/ns/diff", "diffmk:wrapper");
+  }
+
+  public String getWrapper(String contextNS, String context) {
+    String key = "{" + contextNS + "}" + context;
+    System.out.println("getWrapper(" + contextNS + "," + context + ")");
+
+    if (elemContext.containsKey(key)) {
+      String elemName = (String) elemContext.get(key);
+      if (elemName.equals("*")) {
+	return null;
+      } else {
+	return elemName;
+      }
+    } else if (elemContext.containsKey("*")) {
+      return (String) elemContext.get("*");
+    } else {
+      return null;
+    }
+  }
+
+  public Element _old_getWrapper(Element context) {
     String elemName = null;
     String nsURI = context.getNamespaceURI();
 
@@ -124,7 +153,7 @@ public class DiffMarkup {
     }
   }
 
-  public String getWrapper(String contextNS, String context) {
+  public String _old_getWrapper(String contextNS, String context) {
     String key = "{" + contextNS + "}" + context;
 
     if (elemContext.containsKey(key)) {
@@ -140,7 +169,7 @@ public class DiffMarkup {
       return null;
     }
   }
-
+  
   public void setDefaultWrapper(String elemNS, String elemName) {
     elemContext.put("*", "{" + elemNS + "}" + elemName);
   }

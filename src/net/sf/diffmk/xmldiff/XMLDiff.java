@@ -42,7 +42,6 @@ public class XMLDiff {
   protected PrintStream msgOut = null;
   protected PrintStream debugOut = null;
 
-  protected boolean nsAware = true;
   protected boolean validate = true;
   protected boolean diffElements = false;
   protected boolean diffText = true;
@@ -51,7 +50,7 @@ public class XMLDiff {
   protected Diff.change script = null;
   protected NodeDiff nodes1[] = null;
   protected NodeDiff nodes2[] = null;
-  protected DiffMarkup diffMarkup = null;
+  protected DiffMarkup diffMarkup = new DiffMarkup();
 
   protected Document doc1 = null;
   protected Document doc2 = null;
@@ -70,15 +69,6 @@ public class XMLDiff {
     this.msgOut = msgOut;
     this.debugOut = debugOut;
     this.verbose = verbose;
-  }
-
-  public void setDiffMarkup(DiffMarkup dm) {
-    diffMarkup = dm;
-    NodeDiff.setDiffMarkup(dm);
-  }
-
-  public void setNamespaceAware(boolean aware) {
-    nsAware = aware;
   }
 
   public void setValidating(boolean validating) {
@@ -109,7 +99,7 @@ public class XMLDiff {
     return doc2;
   }
 
-  public Document getNewDocument(DiffMarkup diffMarkup) {
+  public Document getNewDocument() {
     DiffDocBuilder builder = new DiffDocBuilder(diffMarkup,debugOut);
 
     for (int count = 0; count < newNodeList.size(); count++) {
@@ -120,7 +110,12 @@ public class XMLDiff {
     }
 
     builder.build(newNodeList);
-    return builder.getDocument();
+    
+    // Slip in the namespace declaration
+    Document doc = builder.getDocument();
+    Element root = doc.getDocumentElement();
+    root.setAttribute("xmlns:diffmk", "http://diffmk.sf.net/ns/diff");
+    return doc;
   }
 
   public NodeDiff[] getNodes1() {
@@ -138,7 +133,7 @@ public class XMLDiff {
     DocumentBuilder builder = null;
 
     factory = DocumentBuilderFactory.newInstance();
-    factory.setNamespaceAware(nsAware);
+    factory.setNamespaceAware(true);
     factory.setValidating(validate);
     try {
       builder = factory.newDocumentBuilder();
@@ -237,13 +232,12 @@ public class XMLDiff {
 
       // What about verbatim?
       boolean verbatim = false;
-      Node parent = node.getParentNode();
+      Node parent = node;
       while (!verbatim && parent != null) {
-	if (parent.getNodeType() == Node.ELEMENT_NODE) {
-	  verbatim = verbatim || diffMarkup.verbatimElement(parent.getNamespaceURI(),
-							    parent.getLocalName());
-	}
-	parent = parent.getParentNode();
+          if (parent.getNodeType() == Node.ELEMENT_NODE) {
+              verbatim = "preserve".equals(((Element) parent).getAttribute("xml:space"));
+          }
+          parent = parent.getParentNode();
       }
 
       if (!verbatim && diffWords) {

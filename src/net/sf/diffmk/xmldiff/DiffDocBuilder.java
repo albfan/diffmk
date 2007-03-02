@@ -40,7 +40,7 @@ import bmsi.util.Diff;
 public class DiffDocBuilder {
   protected PrintStream debugOut = null;
   protected Document doc = null;
-  protected DiffMarkup diffMarkup = null;
+  protected DiffMarkup diffMarkup = new DiffMarkup();
 
   public DiffDocBuilder(DiffMarkup dMarkup, PrintStream debugOut) {
     diffMarkup = dMarkup;
@@ -93,6 +93,7 @@ public class DiffDocBuilder {
 
     for (int count = 0; count < nodeList.size(); count++) {
       NodeDiff nd = (NodeDiff) nodeList.get(count);
+      
       NodeDiff next = null;
       boolean skip = false;
       int status = nd.getStatus();
@@ -126,12 +127,14 @@ public class DiffDocBuilder {
 
     nodeList = santize(nodeList);
 
+    /*
     for (int count = 0; count < nodeList.size(); count++) {
       NodeDiff nd = (NodeDiff) nodeList.get(count);
       //      if (!nd.isText() && nd.getNode().getNodeType() == Node.ELEMENT_NODE) {
       //System.err.println("LIST2: " + count + ": " + nd);
 	//      }
     }
+     */
 
     Stack eStack = new Stack();
 

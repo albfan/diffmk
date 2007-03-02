@@ -29,7 +29,7 @@ public class NodeDiff extends Object {
 
   public static boolean ignoreWhitespace = false;
 
-  protected static DiffMarkup diffMarkup = null;
+  protected static DiffMarkup diffMarkup = new DiffMarkup();
 
   protected String text = null;
   protected Node node = null;
@@ -50,10 +50,6 @@ public class NodeDiff extends Object {
   public NodeDiff (String text) {
     super();
     this.text = text;
-  }
-
-  public static void setDiffMarkup(DiffMarkup dm) {
-    diffMarkup = dm;
   }
 
   public boolean isText() {
