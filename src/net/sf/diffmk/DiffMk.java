@@ -52,7 +52,7 @@ public class DiffMk {
   protected static PrintStream debugOut = null;
   protected static CommandOpts options = null;
 
-  public static String version = "XML DiffMK Java 2.0 beta 1";
+  public static String version = "DiffMK V3.0 alpha 1";
 
   private boolean validating = false;
   private int verbose = 0;
@@ -144,7 +144,7 @@ public class DiffMk {
       ui.wordOpt = diffWords;
       ui.ignOpt = ignoreWhitespace;
       ui.valOpt = validating;
-      ui.verbosity = verbose;
+      ui.verbOpt = (verbose > 0);
 
       ui.show(this);
   }
