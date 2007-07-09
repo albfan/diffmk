@@ -71,6 +71,7 @@ public class DiffMk {
       if (diffmk.getUI()) {
           diffmk.ui();
       }
+     
       diffmk.runClean();
   }
 
@@ -152,7 +153,114 @@ public class DiffMk {
 
   public void runClean() {
       try {
-          run();
+          // normalize "" and null
+          outputFile = "".equals(outputFile) ? null : outputFile;
+          originalXMLFile = "".equals(originalXMLFile) ? null : originalXMLFile;
+          changedXMLFile = "".equals(changedXMLFile) ? null : changedXMLFile;
+          debugOutputFile = "".equals(debugOutputFile) ? null : debugOutputFile;
+      
+          if (outputFile == null) {
+              throw new IllegalArgumentException("You must specify an output filename.");
+          }
+
+          DocumentBuilderFactory factory = null;
+          DocumentBuilder builder = null;
+
+          Document doc1 = null;
+          Document doc2 = null;
+
+          factory = DocumentBuilderFactory.newInstance();
+          factory.setNamespaceAware(true);
+          factory.setValidating(validating);
+          builder = factory.newDocumentBuilder();
+
+          if (verbose > 0) {
+              System.out.println("Loading "+originalXMLFile+"...");
+          }
+          doc1 = builder.parse(originalXMLFile);
+
+          if (verbose > 0) {
+              System.out.println("Loading "+changedXMLFile+"...");
+          }
+          doc2 = builder.parse(changedXMLFile);
+
+          // Setup the output file
+          FileOutputStream xmlStream = new FileOutputStream(outputFile);
+          OutputStreamWriter xmlWriter = new OutputStreamWriter(xmlStream, "utf-8");
+          xmlOut = new PrintWriter(xmlWriter);
+
+          // Setup the debug output file
+          String xmlDebugFilename = options.getStringOption("debugout");
+          if (xmlDebugFilename != null && !xmlDebugFilename.equals("")) {
+              if (xmlDebugFilename.equals("-")) {
+                  debugOut = System.out;
+              } else {
+                  FileOutputStream debugStream = new FileOutputStream(xmlDebugFilename);
+                  debugOut = new PrintStream(debugStream);
+              }
+          }
+          
+          Document diffdoc = run(doc1, doc2);
+          
+          FileInputStream f1Stream = null;
+          String preamble = "";
+          try {
+              f1Stream = new FileInputStream(changedXMLFile);
+              int fByte = f1Stream.read();
+              for (int count = 0; fByte >= 0 && count < 8192; count++) {
+                  preamble += (char) fByte;
+                  fByte = f1Stream.read();
+              }
+          } catch (Exception fe) {
+              // nop
+          }
+
+          int pos = preamble.indexOf("<!DOCTYPE");
+          if (pos >= 0) {
+              int gtpos = preamble.indexOf(">", pos);
+              int lbpos = preamble.indexOf("[", pos);
+
+              if (lbpos < 0
+                      || (gtpos > 0 && gtpos < lbpos)) {
+                  // no internal subset
+                  preamble = preamble.substring(0, gtpos+1);
+              } else {
+                  // internal subset
+                  pos = preamble.indexOf("]>");
+                  if (pos >= 0) {
+                      preamble = preamble.substring(0, pos+2);
+                  } else {
+                      try {
+                          char c1 = 0;
+                          char c2 = preamble.charAt(preamble.length()-1);
+                          int fByte = f1Stream.read();
+                          boolean done = false;
+                          while (fByte >= 0 && !done) {
+                              c1 = c2;
+                              c2 = (char) fByte;
+                              preamble += c2;
+                              done = (c1 == ']' && c2 == '>');
+                              fByte = f1Stream.read();
+                          }
+                      } catch (Exception fe) {
+                          // nop
+                      }
+                  }
+              }
+          } else {
+              preamble = "";
+          }
+
+          try {
+              f1Stream.close();
+          } catch (Exception e) {
+              System.out.println("Failed to close input file: " + e);
+          }
+
+          Serializer serializer = new Serializer(xmlOut);
+          serializer.serialize(diffdoc, preamble);
+
+          xmlOut.close();
       } catch (ParserConfigurationException pce) {
           pce.printStackTrace();
       } catch (SAXException se) {
@@ -162,54 +270,7 @@ public class DiffMk {
       }
   }
   
-  public void run() throws ParserConfigurationException, SAXException, IOException {
-      // normalize "" and null
-      outputFile = "".equals(outputFile) ? null : outputFile;
-      originalXMLFile = "".equals(originalXMLFile) ? null : originalXMLFile;
-      changedXMLFile = "".equals(changedXMLFile) ? null : changedXMLFile;
-      debugOutputFile = "".equals(debugOutputFile) ? null : debugOutputFile;
-      
-      if (outputFile == null) {
-          throw new IllegalArgumentException("You must specify an output filename.");
-      }
-
-      DocumentBuilderFactory factory = null;
-      DocumentBuilder builder = null;
-
-      Document doc1 = null;
-      Document doc2 = null;
-
-      factory = DocumentBuilderFactory.newInstance();
-      factory.setNamespaceAware(true);
-      factory.setValidating(validating);
-      builder = factory.newDocumentBuilder();
-
-      if (verbose > 0) {
-          System.out.println("Loading "+originalXMLFile+"...");
-      }
-      doc1 = builder.parse(originalXMLFile);
-
-      if (verbose > 0) {
-          System.out.println("Loading "+changedXMLFile+"...");
-      }
-      doc2 = builder.parse(changedXMLFile);
-
-      // Setup the output file
-      FileOutputStream xmlStream = new FileOutputStream(outputFile);
-      OutputStreamWriter xmlWriter = new OutputStreamWriter(xmlStream, "utf-8");
-      xmlOut = new PrintWriter(xmlWriter);
-
-      // Setup the debug output file
-      String xmlDebugFilename = options.getStringOption("debugout");
-      if (xmlDebugFilename != null && !xmlDebugFilename.equals("")) {
-          if (xmlDebugFilename.equals("-")) {
-              debugOut = System.out;
-          } else {
-              FileOutputStream debugStream = new FileOutputStream(xmlDebugFilename);
-              debugOut = new PrintStream(debugStream);
-          }
-      }
-
+  public Document run(Document doc1, Document doc2) {
     XMLDiff diff = new XMLDiff(System.out, debugOut, verbose);
     diff.setValidating(validating);
     diff.setDiffElements(diffType.equals("element")
@@ -222,66 +283,7 @@ public class DiffMk {
     NodeDiff.ignoreWhitespace = ignoreWhitespace;
     diff.computeDiff(doc1, doc2);
     diff.update();
-
-    FileInputStream f1Stream = null;
-    String preamble = "";
-    try {
-      f1Stream = new FileInputStream(changedXMLFile);
-      int fByte = f1Stream.read();
-      for (int count = 0; fByte >= 0 && count < 8192; count++) {
-	preamble += (char) fByte;
-	fByte = f1Stream.read();
-      }
-    } catch (Exception fe) {
-      // nop
-    }
-
-    int pos = preamble.indexOf("<!DOCTYPE");
-    if (pos >= 0) {
-      int gtpos = preamble.indexOf(">", pos);
-      int lbpos = preamble.indexOf("[", pos);
-
-      if (lbpos < 0
-	  || (gtpos > 0 && gtpos < lbpos)) {
-	// no internal subset
-	preamble = preamble.substring(0, gtpos+1);
-      } else {
-	// internal subset
-	pos = preamble.indexOf("]>");
-	if (pos >= 0) {
-	  preamble = preamble.substring(0, pos+2);
-	} else {
-	  try {
-	    char c1 = 0;
-	    char c2 = preamble.charAt(preamble.length()-1);
-	    int fByte = f1Stream.read();
-	    boolean done = false;
-	    while (fByte >= 0 && !done) {
-	      c1 = c2;
-	      c2 = (char) fByte;
-	      preamble += c2;
-	      done = (c1 == ']' && c2 == '>');
-	      fByte = f1Stream.read();
-	    }
-	  } catch (Exception fe) {
-	    // nop
-	  }
-	}
-      }
-    } else {
-      preamble = "";
-    }
-
-    try {
-      f1Stream.close();
-    } catch (Exception e) {
-      System.out.println("Failed to close input file: " + e);
-    }
-
-    Serializer serializer = new Serializer(xmlOut);
-    serializer.serialize(diff.getNewDocument(), preamble);
-
-    xmlOut.close();
+    return diff.getNewDocument();
   }
 
   public static void dump(Node node) {

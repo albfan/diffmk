@@ -23,7 +23,7 @@
   </phrase>
 </xsl:template>
 
-<xsl:template match="*[@diffmk:changed]" priority="500">
+<xsl:template match="*[@diffmk:change]" priority="500">
   <xsl:copy>
     <xsl:copy-of select="@*[not(name(.) = 'diffmk:changed')]"/>
     <xsl:call-template name="diffmark"/>
@@ -47,13 +47,13 @@
 <xsl:template name="diffmark">
   <xsl:attribute name="diff">
     <xsl:choose>
-      <xsl:when test="@diffmk:changed = 'added'">add</xsl:when>
-      <xsl:when test="@diffmk:changed = 'changed'">chg</xsl:when>
-      <xsl:when test="@diffmk:changed = 'deleted'">del</xsl:when>
+      <xsl:when test="@diffmk:change = 'added'">add</xsl:when>
+      <xsl:when test="@diffmk:change = 'changed'">chg</xsl:when>
+      <xsl:when test="@diffmk:change = 'deleted'">del</xsl:when>
       <xsl:otherwise>
 	<xsl:message>
-	  <xsl:text>Unexpected value for @diffmk:changed: </xsl:text>
-	  <xsl:value-of select="@diffmk:changed"/>
+	  <xsl:text>Unexpected value for @diffmk:change: </xsl:text>
+	  <xsl:value-of select="@diffmk:change"/>
 	</xsl:message>
       </xsl:otherwise>
     </xsl:choose>

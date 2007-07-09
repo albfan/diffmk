@@ -86,6 +86,10 @@ public class DiffMarkup {
   }
 
   public Element getWrapper(Element context) {
+      if (context == null) {
+          System.err.print("The sky is falling!");
+          return null;
+      }
     Document doc = context.getOwnerDocument();
     return doc.createElementNS("http://diffmk.sf.net/ns/diff", "diffmk:wrapper");
   }

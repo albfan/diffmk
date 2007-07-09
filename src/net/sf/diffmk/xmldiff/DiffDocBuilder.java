@@ -146,7 +146,7 @@ public class DiffDocBuilder {
       if (!nd.isText() && nd.getNode().getNodeType() == Node.ELEMENT_NODE) {
 	if (nd.isEndTag()) {
 	  if (eStack.empty()) {
-	    System.err.println("Out of context (empty stack): " + nd);
+	    //System.err.println("Out of context (empty stack): " + nd);
 	  } else {
 	    Node ot = (Node) eStack.peek();
 	    Node e = nd.getNode();
@@ -157,7 +157,7 @@ public class DiffDocBuilder {
 		&& e.getLocalName().equals(ot.getLocalName())) {
 	      eStack.pop();
 	    } else {
-	      System.err.println("Out of context: " + nd);
+	      //System.err.println("Out of context: " + nd);
 	    }
 	  }
 	} else {
@@ -167,7 +167,7 @@ public class DiffDocBuilder {
     }
 
     if (!eStack.empty()) {
-      System.err.println("Open stack!?");
+      //System.err.println("Open stack!?");
     }
 
     for (int count = 0; count < nodeList.size(); count++) {
@@ -179,7 +179,7 @@ public class DiffDocBuilder {
       //System.err.println("Building " + nd + " (context: " + context + ")");
 
       if (nd.isEndTag()) {
-	if (context != null && context.getNodeType() == Node.ELEMENT_NODE) {
+	if (context != null && context.getNodeType() == Node.ELEMENT_NODE && context.getParentNode() != null) {
 	  context = context.getParentNode();
 	}
       } else {

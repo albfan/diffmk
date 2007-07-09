@@ -114,7 +114,9 @@ public class XMLDiff {
     // Slip in the namespace declaration
     Document doc = builder.getDocument();
     Element root = doc.getDocumentElement();
-    root.setAttribute("xmlns:diffmk", "http://diffmk.sf.net/ns/diff");
+    root.setAttributeNS("http://diffmk.sf.net/ns/diff","diffmk:version","3.0");
+    // Hack?
+    root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:diffmk", "http://diffmk.sf.net/ns/diff");
     return doc;
   }
 
