@@ -19,21 +19,15 @@ package net.sf.diffmk.xmldiff;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Stack;
-import java.util.Enumeration;
 
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import javax.xml.parsers.*;
 
-import net.sf.diffmk.xmldiff.NodeDiff;
-import net.sf.diffmk.xmldiff.XMLDiffException;
 import net.sf.diffmk.util.WhitespaceTokenizer;
 
 import bmsi.util.Diff;
@@ -242,7 +236,8 @@ public class XMLDiff {
           parent = parent.getParentNode();
       }
 
-      if (!verbatim && diffWords) {
+      //if (!verbatim && diffWords) {
+      if (diffWords) {
 	WhitespaceTokenizer st = new WhitespaceTokenizer(textNode.getData());
 	while (st.hasMoreTokens()) {
 	  String token = st.nextToken();
