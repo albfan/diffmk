@@ -90,6 +90,16 @@ public class Serializer {
       String quote = "\"";
       String value = attr.getValue();
 
+      // Make sure we don't output quotes...
+      if (value.indexOf("\"") >= 0) {
+          if (value.indexOf("\'") >= 0) {
+              // Escape the double quotes...
+              value = value.replaceAll("\"", "&quot;");
+          } else {
+              quote = "\'";
+          }
+      }
+      
       out.print(" " + attr.getName() + "=" + quote);
       out.print(value);
       out.print(quote);
