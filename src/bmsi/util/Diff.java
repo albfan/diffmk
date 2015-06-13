@@ -26,7 +26,7 @@ import java.util.Hashtable;
     whitespace" are implemented by modifying the <code>equals</code>
     and <code>hashcode</code> methods for the objects compared.
 <p>
-   The basic algorithm is described in: </br>
+   The basic algorithm is described in:
    "An O(ND) Difference Algorithm and its Variations", Eugene Myers,
    Algorithmica Vol. 1 No. 2, 1986, p 251.  
 <p>
