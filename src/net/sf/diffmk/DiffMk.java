@@ -155,14 +155,16 @@ public class DiffMk {
       try {
           // normalize "" and null
           outputFile = "".equals(outputFile) ? null : outputFile;
+
+          if (outputFile == null) {
+              System.err.println("\nYou must specify an output filename. See --help\n");
+              System.exit(1);
+          }
+
           originalXMLFile = "".equals(originalXMLFile) ? null : originalXMLFile;
           changedXMLFile = "".equals(changedXMLFile) ? null : changedXMLFile;
           debugOutputFile = "".equals(debugOutputFile) ? null : debugOutputFile;
       
-          if (outputFile == null) {
-              throw new IllegalArgumentException("You must specify an output filename.");
-          }
-
           DocumentBuilderFactory factory = null;
           DocumentBuilder builder = null;
 
